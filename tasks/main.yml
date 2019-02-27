@@ -45,5 +45,5 @@
     - jobs.yaml
     - patch.yaml
     - alerts.yaml
-    - blackbox-chart-values.yaml
+    - values.yaml
 
