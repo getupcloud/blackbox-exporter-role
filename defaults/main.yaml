@@ -5,6 +5,6 @@ endpoints:
 - https://google.com.br
 - https://facebook.com
 - https://twitter.com
-prometheus_k8s_name: prometheus
+prometheus_k8s_name: prometheus-operator-prometheus
 prometheus_k8s_namespace: monitoring
 prometheus_k8s_secret: prometheus-additional-scrape
