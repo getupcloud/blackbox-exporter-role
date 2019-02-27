@@ -15,4 +15,4 @@
     - source_labels: [__param_target]
       target_label: instance
     - target_label: __address__
-      replacement: {{ blackbox_service }}.{{ blackbox_k8s_namespace }}:9115
+      replacement: {{ blackbox_helm_release_name }}-prometheus-blackbox-exporter.{{ blackbox_k8s_namespace }}:9115
