@@ -1,4 +1,4 @@
-Atom Packages
+Blackbox Exporter
 =========
 
 Adding blackbox-exporter to an existing prometheus-operator installation
