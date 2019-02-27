@@ -11,11 +11,11 @@
 - name: Copying helm chart values
   copy:
     src: blackbox-chart-values.yaml
-    dest: blackbox-chart-values.yaml
+    dest: values.yaml
 
 - name: Installing blackbox-exporter chart
   shell: |-
-    helm upgrade --install {{ blackbox_helm_release_name }} stable/prometheus-blackbox-exporter --namespace {{ blackbox_k8s_namespace }} --reuse-values -f blackbox-chart-values.yaml
+    helm upgrade --install {{ blackbox_helm_release_name }} stable/prometheus-blackbox-exporter --namespace {{ blackbox_k8s_namespace }} --reuse-values -f values.yaml
 
 - name: Creating secret for spec.additionalScrapeConfig
   shell: |-
@@ -29,3 +29,13 @@
   k8s:
     state: present
     src: alerts.yaml
+
+- name: Cleaning generated files
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - jobs.yaml
+    - patch.yaml
+    - alerts.yaml
+    - blackbox-chart-values.yaml
