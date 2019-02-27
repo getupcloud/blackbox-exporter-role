@@ -22,8 +22,15 @@
     kubectl create secret generic {{ prometheus_k8s_secret }} -n {{ prometheus_k8s_namespace }} --from-file=jobs.yaml --dry-run -o yaml | kubectl apply -f -
 
 - name: Patching current Prometheus object to add spec.additionalScrapeConfig
-  shell: |-
-    kubectl patch prometheus {{ prometheus_k8s_name }} -n {{ blackbox_k8s_namespace }} --patch "$(cat patch.yaml)"
+  k8s:
+    name: "{{ prometheus_k8s_name }}"
+    namespace: "{{ prometheus_k8s_namespace }}"
+    api_version: monitoring.coreos.com/v1
+    kind: Prometheus
+    src: patch.yaml
+    merge_type:
+    - strategic-merge
+    - merge
 
 - name: Adding blackbox-exporter alerting rules
   k8s:
@@ -39,3 +46,4 @@
     - patch.yaml
     - alerts.yaml
     - blackbox-chart-values.yaml
+
