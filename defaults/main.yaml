@@ -1,0 +1,10 @@
+---
+blackbox_helm_release_name: blackbox-exporter
+blackbox_k8s_namespace: monitoring
+endpoints:
+- https://google.com.br
+- https://facebook.com
+- https://twitter.com
+prometheus_k8s_name: prometheus
+prometheus_k8s_namespace: monitoring
+prometheus_k8s_secret: prometheus-additional-scrape

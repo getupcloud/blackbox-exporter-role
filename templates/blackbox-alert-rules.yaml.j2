@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: prometheus-operator
+    release: prometheus-operator
+  name: prometheus-operator-blackbox.rules
+  namespace: {{ prometheus_namespace }}
+spec:
+  groups:
+  - name: blackbox.rules
+    rules:
+    - alert: EndpointDown
+      expr: probe_success == 0
+      for: 1m
+      labels:
+        service: endpoint
+        severity: "critical"
+      annotations:
+        description: "Blackbox Exporter could not achieve endpoint for 1 minute"
+        summary: "Endpoint {{ $labels.instance }} down"

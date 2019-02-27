@@ -1,0 +1,26 @@
+---
+- name: Generating blackbox-exporter yamls from templates
+  template:
+    src: "{{ item.source }}"
+    dest: "{{ item.final }}"
+  loop:
+    - { source: 'prometheus-job-config.yaml.j2', final: 'jobs.yaml' } # Prometheu custom configuration used in additionalScrapeConfig
+    - { source: 'k8s-patch-prometheus.yaml.j2', final: 'patch.yaml' } # Patching a prometheus object to add additionalScrapeConfig
+    - { source: 'blackbox-alert-rules.yaml.j2', final: 'alerts.yaml' }  # blackbox-exporter PrometheusRule alertmanager rules
+
+- name: Installing blackbox-exporter chart
+  shell: |-
+    helm upgrade --install {{ blackbox_helm_release_name }} stable/prometheus-blackbox-exporter --namespace {{ blackbox_k8s_namespace }} --reuse-values -f blackbox-chart-values.yaml
+
+- name: Creating secret for spec.additionalScrapeConfig
+  shell: |-
+    kubectl create secret generic {{ prometheus_k8s_secret }} -n {{ prometheus_k8s_namespace }} --from-file=jobs.yaml --dry-run -o yaml | kubectl apply -f -
+
+- name: Patching current Prometheus object to add spec.additionalScrapeConfig
+  shell: |-
+    kubectl patch prometheus {{ prometheus_k8s_name }} -n {{ blackbox_k8s_namespace }} --patch "$(cat patch.yaml)"
+
+- name: Adding blackbox-exporter alerting rules
+  k8s:
+    state: present
+    src: alerts.yaml
