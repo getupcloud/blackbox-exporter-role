@@ -1,5 +1,5 @@
 ---
-blackbox_helm_release_name: blackbox-exporter
+blackbox_helm_release_name: blackbox
 blackbox_k8s_namespace: monitoring
 endpoints:
 - https://google.com.br
