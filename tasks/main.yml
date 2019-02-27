@@ -8,6 +8,11 @@
     - { source: 'k8s-patch-prometheus.yaml.j2', final: 'patch.yaml' } # Patching a prometheus object to add additionalScrapeConfig
     - { source: 'blackbox-alert-rules.yaml.j2', final: 'alerts.yaml' }  # blackbox-exporter PrometheusRule alertmanager rules
 
+- name: Copying helm chart values
+  copy:
+    src: blackbox-chart-values.yaml
+    dest: blackbox-chart-values.yaml
+
 - name: Installing blackbox-exporter chart
   shell: |-
     helm upgrade --install {{ blackbox_helm_release_name }} stable/prometheus-blackbox-exporter --namespace {{ blackbox_k8s_namespace }} --reuse-values -f blackbox-chart-values.yaml
